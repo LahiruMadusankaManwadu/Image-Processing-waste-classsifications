@@ -1,133 +1,88 @@
-# 🗑️ Smart Waste Classification System (CNN)
+# ♻️Smart Waste Management System (Image Processing Based)
 
-This project implements a **Smart Waste Management System** using **Convolutional Neural Networks (CNNs)** and digital image processing. The goal is to classify waste items (e.g., plastic, paper, glass, metal, organic) based on images, generate statistics, and simulate sorting actions.
+**Project:** Image Processing Based Smart Waste Management System
 
----
+## Description
 
-## 🚀 Features
+A project that classifies waste images into categories (e.g., glass, plastic, organic) using a CNN model trained with TensorFlow/Keras. It includes preprocessing, model training, evaluation, and model export for deployment.
 
-* Image preprocessing & augmentation (OpenCV + Keras ImageDataGenerator)
-* CNN-based classification (Transfer Learning with **MobileNetV2**)
-* Training with callbacks: EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-* Accuracy & loss plots, confusion matrix visualization
-* Statistical logging (JSON/CSV reports of waste counts)
-* Single-image prediction demo with OpenCV visualization
-* Optional Raspberry Pi integration for actuator control (servo motor)
+## Features
 
----
+* Image preprocessing (resizing, normalization, augmentation)
+* CNN model built with TensorFlow/Keras
+* Training and validation pipeline
+* Model saving (`.h5` and conversion-ready for TFLite)
+* Evaluation with accuracy and confusion matrix
 
-## 📂 Project Structure
-
-```
-├── dataset/               # Your dataset (one folder per class)
-│   ├── plastic/
-│   ├── paper/
-│   ├── glass/
-│   ├── metal/
-│   └── organic/
-├── models/                # Saved models (best_model.h5, final_model.h5)
-├── outputs/               # Logs, plots, confusion matrix, stats
-├── waste_classifier.py    # Main training/evaluation/prediction script
-├── requirements.txt       # Python dependencies
-└── README.md              # Project documentation
-```
-
----
-
-## ⚙️ Installation
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/your-username/smart-waste-classifier.git
-   cd smart-waste-classifier
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
----
-
-## 📊 Dataset
-
-Prepare your dataset in this structure:
-
-```
-dataset/
-  plastic/
-    img001.jpg
-    img002.jpg
-  paper/
-  glass/
-  metal/
-  organic/
-```
-
-* One object per image (requirement).
-* At least \~100 images per class recommended.
-* You can use the [TrashNet dataset](https://github.com/garythung/trashnet) or capture your own.
-
----
-
-## 🏋️‍♂️ Training
-
-Run training with default parameters:
+## Requirements
 
 ```bash
-python waste_classifier.py --mode train --dataset ./dataset --epochs 20 --batch_size 32
+python 3.8+
+numpy
+pandas
+tensorflow
+opencv-python
+matplotlib
+scikit-learn
+jupyter
 ```
 
-Models will be saved in `models/`, plots and stats in `outputs/`.
+## Project Structure
 
----
-
-## 📈 Evaluation
-
-Evaluate a trained model:
-
-```bash
-python waste_classifier.py --mode eval --dataset ./dataset --model models/best_model.h5
+```
+├── data/                   # dataset split into class subfolders
+├── notebooks/              # Jupyter notebooks (including this notebook)
+├── src/                    # preprocessing, training, and utils scripts
+├── models/                 # saved models (.h5, .tflite)
+├── README.md
+└── requirements.txt
 ```
 
-Generates:
+## How to run
 
-* `outputs/stats.json` → validation accuracy & class counts
-* `outputs/confusion_matrix.png`
-* CSV with class distribution
+1. Clone the repo.
+2. Prepare your dataset in `data/` with subfolders for each class (e.g., `plastic/`, `organic/`).
+3. Install requirements: `pip install -r requirements.txt`.
+4. Open the notebook `Code for model.ipynb` in `notebooks/` and run cells to preprocess and train.
 
----
+### Training (script)
 
-## 🔍 Prediction Demo
-
-Classify a single image:
-
-```bash
-python waste_classifier.py --mode predict --image path/to/image.jpg --model models/best_model.h5
+```
+python src/train.py --data_dir data/ --epochs 20 --batch_size 32
 ```
 
-An OpenCV window will show the image with predicted label & confidence.
+### Convert .h5 to TFLite
 
----
+```python
+import tensorflow as tf
+model = tf.keras.models.load_model('models/model.h5')
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+open('models/model.tflite', 'wb').write(tflite_model)
+```
 
-## 🤝 Collaboration (GitHub Requirement)
+## Notebook highlights
 
-* Each teammate should work on a **separate module** (preprocessing, classification, statistics, etc.).
-* Use **branches & pull requests** for contributions.
-* GitHub history will be used for grading.
+* Key imports detected:
 
----
+  * `from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, Reshape, LSTM, Dense`
+  * `import tensorflow as tf`
+  * `import numpy as np`
+  * `import cv2`
+  * `import os`
 
-## 🎯 Bonus Features (optional)
+* Key config variables detected:
 
-* Recyclability detection (recyclable vs non-recyclable)
-* Deploying on **Raspberry Pi / Edge devices**
-* Hardware sorting demo with **servo motors**
+  * No global config variables detected. See notebook for dataset paths and parameters.
 
----
+## Model & Training Notes
 
-## 📜 License
+Model definition, training, and saving steps are in the notebook. Make sure to adapt dataset paths before running.
 
-This project is for academic purposes (University of Jaffna, EC9570 – Digital Image Processing assignment). You may adapt and extend it for further research.
+## Evaluation
+
+* The notebook computes metrics and plots a confusion matrix and training history. Use these to analyze model performance and avoid overfitting.
+
+
+
+
